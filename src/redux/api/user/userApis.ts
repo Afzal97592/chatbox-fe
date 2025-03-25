@@ -1,4 +1,6 @@
+import {mmKvStorage} from '../../../utils/mmkv-storage-utils';
 import {apiSlice} from '../apiSlice';
+import {setToken} from './authSlice';
 const authApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     registerUser: builder.mutation({
@@ -14,6 +16,17 @@ const authApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: userData,
       }),
+      async onQueryStarted(userData, {queryFulfilled, dispatch}) {
+        try {
+          const {data} = await queryFulfilled;
+          if (data.token) {
+            mmKvStorage.setItem('token', data.token);
+            dispatch(setToken(data.token));
+          }
+        } catch (error) {
+          console.log('error', error);
+        }
+      },
     }),
   }),
 });

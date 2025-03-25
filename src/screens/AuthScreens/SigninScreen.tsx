@@ -15,7 +15,7 @@ import SafeAreaComp from '../../components/SafeAreaComp';
 import {primary} from '../../constants/colors';
 import {moderateScale, verticalScale} from '../../utils/responsive';
 import HeaderComp from '../../components/HeaderComp';
-import {goBack} from '../../utils/navigationService';
+import {goBack, navigate} from '../../utils/navigationService';
 import {globalStyles} from '../../globalCss/globalCss';
 import {fbIcon, GoogleIcon} from '../../constants/ImagesPath';
 import useFormValidation from '../../hooks/validateFields';
@@ -37,14 +37,15 @@ const SigninScreen = () => {
         console.log('Form submitted successfully!!!!', formData);
         const result = await loginUser(formData);
         if (result.data.token) {
-          console.log('Token:', result.data.token);
-          mmKvStorage.setItem('token', result.data.token);
+          // mmKvStorage.setItem('token', result.data.token);
+          // navigate('HomeScreen');
         }
       } catch (error) {
         console.error('Error submitting form:', error);
       }
     }
   };
+  isLoading && <Text>Loading...</Text>;
   return (
     <SafeAreaComp>
       <HeaderComp onPress={() => goBack()} />

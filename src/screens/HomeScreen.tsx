@@ -18,7 +18,6 @@ import ProfileScreen from './MainAppScreens/ProfileScreen';
 const BottomTabs = createBottomTabNavigator();
 
 const MyTabBar = ({state, descriptors, navigation}: any) => {
-  console.log(state, 'sate');
   return (
     <View style={styles.tabContainer}>
       {state.routes.map((item: any, index: number) => {
