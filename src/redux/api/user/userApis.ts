@@ -28,6 +28,16 @@ const authApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+    getAllUsers: builder.query({
+      query: () => ({
+        url: `/users?search=&limit=10&page=1`,
+        method: 'GET',
+      }),
+    }),
   }),
 });
-export const {useRegisterUserMutation, useLoginUserMutation} = authApiSlice;
+export const {
+  useRegisterUserMutation,
+  useLoginUserMutation,
+  useGetAllUsersQuery,
+} = authApiSlice;

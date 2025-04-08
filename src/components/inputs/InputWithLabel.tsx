@@ -1,47 +1,12 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native';
-import React, {FC, memo, useEffect, useRef, useState} from 'react';
-import {moderateScale, verticalScale} from '../../utils/responsive';
-import CustomText from '../CustomText';
+import React, {FC, memo} from 'react';
+import {StyleSheet, TextInput, View} from 'react-native';
 import {primary} from '../../constants/colors';
 import {fontFamilies} from '../../globalCss/fontstyle';
+import {moderateScale, verticalScale} from '../../utils/responsive';
+import CustomText from '../CustomText';
+import {TextInputProps} from '../../types/commonTypes';
 
-interface InputWithLabelProps {
-  labelStyle?: TextStyle;
-  errorColor?: string;
-  inputLabel?: string;
-  inputStyle?: Object;
-  labelColor?: string;
-  inputContainer?: Object;
-  error?: string;
-  placeholder?: string;
-  placeholderTextColor?: string;
-  onChangeText?: (text: string) => void;
-  value?: string;
-  secureTextEntry?: boolean;
-  keyboardType?:
-    | 'default'
-    | 'number-pad'
-    | 'decimal-pad'
-    | 'numeric'
-    | 'email-address'
-    | 'phone-pad';
-  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
-  autoCorrect?: boolean;
-  multiline?: boolean;
-  numberOfLines?: number;
-  maxLength?: number;
-  labelVariant?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'h7';
-  errorVariant?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'h7';
-}
-
-const InputWithLabel: FC<InputWithLabelProps> = ({
+const InputWithLabel: FC<TextInputProps> = ({
   labelStyle = {},
   inputLabel,
   errorColor = primary.warning,

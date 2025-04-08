@@ -26,7 +26,7 @@ const baseQuery = async (args: any, api: any, extraOptions: any) => {
     prepareHeaders: headers => {
       const token = mmKvStorage.getItem('token');
       if (token) {
-        headers.set('Authorization', `${token}`);
+        headers.set('Authorization', `Bearer ${token}`);
       }
       return headers;
     },
@@ -34,6 +34,7 @@ const baseQuery = async (args: any, api: any, extraOptions: any) => {
 
   // Make the API request
   const result = await rawBaseQuery(args, api, extraOptions);
+  console.log(result, 'result');
 
   // Check if the response is 404 (Token Expired)
   if (result?.error?.status === 404) {

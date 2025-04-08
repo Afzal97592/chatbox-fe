@@ -15,6 +15,7 @@ import HeaderComp from '../../components/HeaderComp';
 import {goBack} from '../../utils/navigationService';
 import useFormValidation from '../../hooks/validateFields';
 import {useRegisterUserMutation} from '../../redux/api/user/userApis';
+import PopupModal from '../../components/models/PopupModal';
 
 const SignupScreen = () => {
   const {formData, errors, handleInputChange, validateForm, isValidated} =
@@ -26,6 +27,7 @@ const SignupScreen = () => {
     });
 
   const [register, {isLoading, error, data}] = useRegisterUserMutation();
+  const [showModel, setIsShowModel] = useState(false);
 
   const handleSubmit = async () => {
     if (validateForm()) {
@@ -97,6 +99,14 @@ const SignupScreen = () => {
           onPress={handleSubmit}
         />
       </View>
+      <PopupModal
+        visible={!showModel}
+        onClose={() => setIsShowModel(false)}
+        title="Success"
+        subtitle="You successfully registered! please login continue"
+        buttonText="Continue login"
+        isCrossIcon={false}
+      />
     </SafeAreaComp>
   );
 };

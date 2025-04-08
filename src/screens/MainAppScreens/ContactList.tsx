@@ -1,77 +1,122 @@
-import {Button, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import SafeAreaComp from '../../components/SafeAreaComp';
-import HeaderComp from '../../components/HeaderComp';
-import {goBack} from '../../utils/navigationService';
-import SearchIcon from '../../assets/icons/Search.svg';
+import React, {useState} from 'react';
+import {FlatList, Image, StyleSheet, View} from 'react-native';
 import Animated, {
   useAnimatedStyle,
-  useDerivedValue,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-
-function AccordionItem({isExpanded, children, viewKey, style, duration = 500}) {
-  const height = useSharedValue(0);
-
-  const derivedHeight = useDerivedValue(() =>
-    withTiming(height.value * Number(isExpanded.value), {
-      duration,
-    }),
-  );
-  const bodyStyle = useAnimatedStyle(() => ({
-    height: derivedHeight.value,
-  }));
-
-  return (
-    <Animated.View
-      key={`accordionItem_${viewKey}`}
-      style={[styles.animatedView, bodyStyle, style]}>
-      <View
-        onLayout={e => {
-          height.value = e.nativeEvent.layout.height;
-        }}
-        style={styles.wrapper}>
-        {children}
-      </View>
-    </Animated.View>
-  );
-}
-
-function Item() {
-  return <View style={styles.box} />;
-}
-
-function Parent({open}) {
-  return (
-    <View style={styles.parent}>
-      <AccordionItem isExpanded={open} style={{}} viewKey="Accordion">
-        <Item />
-      </AccordionItem>
-    </View>
-  );
-}
+import CrossIcon from '../../assets/icons/Cross.svg';
+import SearchIcon from '../../assets/icons/Search.svg';
+import PillButton from '../../components/buttons/PillButton';
+import CustomText from '../../components/CustomText';
+import HeaderComp from '../../components/HeaderComp';
+import SearchInput from '../../components/inputs/SearchInput';
+import SafeAreaComp from '../../components/SafeAreaComp';
+import {primary} from '../../constants/colors';
+import {useGetAllUsersQuery} from '../../redux/api/user/userApis';
+import {goBack} from '../../utils/navigationService';
+import {moderateScale, verticalScale} from '../../utils/responsive';
 
 const ContactList = () => {
-  const open = useSharedValue(false);
-  const onPress = () => {
-    open.value = !open.value;
+  const animTranslateY = useSharedValue(70);
+  const animListTranslateY = useSharedValue(0);
+  const animOpacity = useSharedValue(0);
+  const [isSearchInputOpen, setIsSearchInputOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
+  const {data, error} = useGetAllUsersQuery({});
+  const [openModel, setOpenModel] = useState(true);
+
+  const toggleInputContainer = () => {
+    setIsSearchInputOpen(!isSearchInputOpen);
+    if (animOpacity.value === 0) {
+      animOpacity.value = withTiming(1, {duration: 700});
+      animTranslateY.value = withTiming(100, {duration: 700});
+      animListTranslateY.value = withTiming(70, {duration: 400});
+    } else {
+      animOpacity.value = withTiming(0, {duration: 700});
+      animTranslateY.value = withTiming(70, {duration: 700});
+      animListTranslateY.value = withTiming(0, {duration: 1000});
+    }
   };
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: animOpacity.value,
+      transform: [{translateY: animTranslateY.value}],
+    };
+  });
+  const animatedStyleList = useAnimatedStyle(() => {
+    return {
+      transform: [{translateY: animListTranslateY.value}],
+    };
+  });
+
+  const CardComp = () => {
+    return (
+      <View style={styles.card}>
+        <View style={styles.left}>
+          <View style={styles.avatarContainer}>
+            {true ? (
+              <CustomText
+                fontfamily="Nunito-SemiBold"
+                color="#FFFFFF"
+                fontSize={25}>
+                AF
+              </CustomText>
+            ) : (
+              <Image />
+            )}
+          </View>
+          <View style={styles.nameContainer}>
+            <CustomText fontfamily="Nunito-Medium" fontSize={14}>
+              Afzal Ahmad
+            </CustomText>
+            <CustomText fontfamily="Nunito-Medium" fontSize={10}>
+              Ahmad_97
+            </CustomText>
+          </View>
+        </View>
+
+        <View>
+          <PillButton title="Add" />
+        </View>
+      </View>
+    );
+  };
+
   return (
     <SafeAreaComp>
+      <Animated.View style={[styles.searchContainer, animatedStyle]}>
+        <SearchInput
+          isCrossIcon={true}
+          value={searchInput}
+          onChangeText={text => setSearchInput(text)}
+          onPressCross={() => setSearchInput('')}
+        />
+      </Animated.View>
       <HeaderComp
         showBackButton={false}
         screenName={'Contacts'}
+        style={{paddingHorizontal: moderateScale(4)}}
         onPress={() => goBack()}
-        RightIcon={<SearchIcon width={25} height={25} />}
+        RightIcon={
+          isSearchInputOpen ? (
+            <CrossIcon width={16} height={16} />
+          ) : (
+            <SearchIcon width={22} height={22} />
+          )
+        }
+        onPressRightIcon={() => toggleInputContainer()}
       />
-      <View style={styles.buttonContainer}>
-        <Button onPress={onPress} title="Click me" />
-      </View>
 
-      <View style={styles.content}>
-        <Parent open={open} />
-      </View>
+      <Animated.View style={[styles.listContainer, animatedStyleList]}>
+        <FlatList
+          data={[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}
+          showsVerticalScrollIndicator={false}
+          renderItem={({item}) => <CardComp />}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </Animated.View>
     </SafeAreaComp>
   );
 };
@@ -84,39 +129,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: 24,
   },
-  buttonContainer: {
-    flex: 1,
-    paddingBottom: 16,
-    display: 'flex',
+
+  searchContainer: {
+    // position: 'absolute',
+  },
+  listContainer: {
+    marginTop: verticalScale(14),
+  },
+  card: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: verticalScale(9),
+  },
+  left: {flexDirection: 'row', justifyContent: 'center', alignItems: 'center'},
+  avatarContainer: {
+    width: moderateScale(52),
+    height: verticalScale(52),
+    backgroundColor: primary.gray,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: moderateScale(52 / 2),
   },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  parent: {
-    width: 200,
-  },
-  wrapper: {
-    width: '100%',
-    position: 'absolute',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  animatedView: {
-    width: '100%',
-    overflow: 'hidden',
-  },
-  box: {
-    height: 120,
-    width: 120,
-    color: '#f8f9ff',
-    backgroundColor: '#b58df1',
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+  nameContainer: {
+    marginLeft: moderateScale(5),
   },
 });
