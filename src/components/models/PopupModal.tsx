@@ -87,6 +87,12 @@ const PopupModal: FC<PopupModalProps> = ({
                 </TouchableWithoutFeedback>
               )}
 
+              <CustomText
+                variant={variant}
+                fontfamily={fontfamily}
+                style={{...styles.title, ...titleStyle}}>
+                {title}
+              </CustomText>
               {animationSource && (
                 <LottieView
                   source={animationSource}
@@ -95,13 +101,6 @@ const PopupModal: FC<PopupModalProps> = ({
                   style={styles.animation}
                 />
               )}
-
-              <CustomText
-                variant={variant}
-                fontfamily={fontfamily}
-                style={{...styles.title, ...titleStyle}}>
-                {title}
-              </CustomText>
 
               <CustomText
                 variant="h4"

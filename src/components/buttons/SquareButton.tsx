@@ -1,5 +1,5 @@
 import React, {FC, memo} from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import {ActivityIndicator, StyleSheet, TouchableOpacity} from 'react-native';
 import {primary} from '../../constants/colors';
 import CustomText from '../CustomText';
 import {moderateScale} from '../../utils/responsive';
@@ -11,6 +11,7 @@ interface Props {
   onPress?: () => void;
   textColor?: string;
   disable?: boolean;
+  isLoading?: boolean;
 }
 
 const SquareButton: FC<Props> = ({
@@ -20,19 +21,25 @@ const SquareButton: FC<Props> = ({
   onPress,
   textColor = primary.gray,
   disable = false,
+  isLoading,
   ...rest
 }) => {
+  console.log('disable', disable, isLoading);
   return (
     <TouchableOpacity
       style={{...styles.button, ...style}}
       onPress={onPress}
       disabled={disable}>
-      <CustomText
-        variant={variant}
-        color={textColor}
-        fontfamily="Nunito-SemiBold">
-        {title}
-      </CustomText>
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <CustomText
+          variant={variant}
+          color={textColor}
+          fontfamily="Nunito-SemiBold">
+          {title}
+        </CustomText>
+      )}
     </TouchableOpacity>
   );
 };
