@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
   Image,
@@ -17,10 +17,19 @@ import {moderateScale, verticalScale} from '../../utils/responsive';
 import HeaderComp from '../../components/HeaderComp';
 import {goBack, navigate} from '../../utils/navigationService';
 import {globalStyles} from '../../globalCss/globalCss';
-import {fbIcon, GoogleIcon} from '../../constants/ImagesPath';
+import {
+  ErrorAnimation,
+  fbIcon,
+  GoogleIcon,
+  SuccessAnimation,
+} from '../../constants/ImagesPath';
 import useFormValidation from '../../hooks/validateFields';
 import {useLoginUserMutation} from '../../redux/api/user/userApis';
+import PopupModal from '../../components/models/PopupModal';
 import {mmKvStorage} from '../../utils/mmkv-storage-utils';
+import RootNavigation from '../../navigation/RootNavigation';
+import {useDispatch} from 'react-redux';
+import {setToken} from '../../redux/api/user/authSlice';
 
 const SigninScreen = () => {
   const {formData, errors, handleInputChange, validateForm, isValidated} =
@@ -30,18 +39,40 @@ const SigninScreen = () => {
     });
 
   const [loginUser, {data, error, isLoading}] = useLoginUserMutation();
+  const dispatch = useDispatch();
+  const [modalContent, setModalContent] = useState({
+    title: '',
+    subtitle: '',
+    animationSource: null,
+  });
+  const [showModal, setShowModal] = useState(false);
 
   const handleSubmit = async () => {
     if (validateForm()) {
       try {
-        console.log('Form submitted successfully!!!!', formData);
-        const result = await loginUser(formData);
-        if (result.data.token) {
-          // mmKvStorage.setItem('token', result.data.token);
-          // navigate('HomeScreen');
+        const data = await loginUser(formData).unwrap();
+
+        setModalContent({
+          title: 'Success',
+          subtitle: 'You successfully logged in!',
+          animationSource: SuccessAnimation,
+        });
+        setShowModal(true);
+        if (data.token) {
+          setTimeout(() => {
+            mmKvStorage.setItem('token', data.token);
+            dispatch(setToken(data.token));
+          }, 1000);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error submitting form:', error);
+        setModalContent({
+          title: 'Oops',
+          subtitle:
+            error?.data?.message || 'Something went wrong. Please try again.',
+          animationSource: ErrorAnimation,
+        });
+        setShowModal(true);
       }
     }
   };
@@ -123,6 +154,15 @@ const SigninScreen = () => {
           disable={!isValidated}
         />
       </View>
+      <PopupModal
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        title={modalContent.title}
+        subtitle={modalContent.subtitle}
+        animationSource={modalContent.animationSource}
+        isCrossIcon={true}
+        isOnBackPressClose={false}
+      />
     </SafeAreaComp>
   );
 };

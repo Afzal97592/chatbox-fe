@@ -10,6 +10,7 @@ import React, {FC} from 'react';
 import CustomText from '../CustomText';
 import {primary} from '../../constants/colors';
 import {moderateScale, verticalScale} from '../../utils/responsive';
+import {VariantTypes} from '../../types/commonTypes';
 
 interface BtnProps {
   style?: ViewStyle;
@@ -18,7 +19,7 @@ interface BtnProps {
   onPress?: () => void;
   disabled?: boolean;
   isLoading?: boolean;
-  variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'h7';
+  variant?: VariantTypes;
   textColor?: string;
 }
 

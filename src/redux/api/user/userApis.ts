@@ -18,11 +18,11 @@ const authApiSlice = apiSlice.injectEndpoints({
       }),
       async onQueryStarted(userData, {queryFulfilled, dispatch}) {
         try {
-          const {data} = await queryFulfilled;
-          if (data.token) {
-            mmKvStorage.setItem('token', data.token);
-            dispatch(setToken(data.token));
-          }
+          // const {data} = await queryFulfilled;
+          // if (data.token) {
+          //   mmKvStorage.setItem('token', data.token);
+          //   dispatch(setToken(data.token));
+          // }
         } catch (error) {
           console.log('error', error);
         }

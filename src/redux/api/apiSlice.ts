@@ -18,7 +18,6 @@
 
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {mmKvStorage} from '../../utils/mmkv-storage-utils';
-import {store} from '../store';
 
 const baseQuery = async (args: any, api: any, extraOptions: any) => {
   const rawBaseQuery = fetchBaseQuery({

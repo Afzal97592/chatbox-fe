@@ -24,7 +24,6 @@ const SquareButton: FC<Props> = ({
   isLoading,
   ...rest
 }) => {
-  console.log('disable', disable, isLoading);
   return (
     <TouchableOpacity
       style={{...styles.button, ...style}}

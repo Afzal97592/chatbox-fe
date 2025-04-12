@@ -50,7 +50,8 @@ const SignupScreen = () => {
     } catch (err: any) {
       setModalContent({
         title: 'Oops',
-        subtitle: err?.data?.error || 'Something went wrong. Please try again.',
+        subtitle:
+          err?.data?.message || 'Something went wrong. Please try again.',
         animationSource: ErrorAnimation,
         btnText: 'Try again',
       });
@@ -63,6 +64,7 @@ const SignupScreen = () => {
       setShowModal(false);
     } else {
       navigate('SigninScreen');
+      setShowModal(false);
     }
   };
 
