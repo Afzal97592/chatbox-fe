@@ -48,3 +48,22 @@ export interface TextInputProps {
   isCrossIcon?: boolean;
   onPressCross?: () => void;
 }
+
+export interface UserDataProps {
+  bio?: string;
+  createdAt: string;
+  dob?: string;
+  email: string;
+  friends?: any[];
+  friendsRequestReceived?: any[];
+  friendsRequestSent: any[];
+  isOnline: boolean;
+  isPublic: boolean;
+  missedCalls: any[];
+  name: string;
+  username: string;
+  profilePicture: string;
+  stories: any[];
+  updatedAt: string;
+  _id: string;
+}

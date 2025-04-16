@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, Image, StyleSheet, View} from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -16,6 +16,8 @@ import {primary} from '../../constants/colors';
 import {useGetAllUsersQuery} from '../../redux/api/user/userApis';
 import {goBack} from '../../utils/navigationService';
 import {moderateScale, verticalScale} from '../../utils/responsive';
+import SkeltonPlaceholderComponent from '../../components/skeltons/SkeltonPlaceholder';
+import {UserDataProps} from '../../types/commonTypes';
 
 const ContactList = () => {
   const animTranslateY = useSharedValue(70);
@@ -23,7 +25,13 @@ const ContactList = () => {
   const animOpacity = useSharedValue(0);
   const [isSearchInputOpen, setIsSearchInputOpen] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const {data, error} = useGetAllUsersQuery({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [pageNum, setPageNum] = useState(1);
+  const {data, error, isLoading} = useGetAllUsersQuery({
+    pageNum,
+    limit: 20,
+    searchQuery,
+  });
   const [openModel, setOpenModel] = useState(true);
 
   const toggleInputContainer = () => {
@@ -51,12 +59,20 @@ const ContactList = () => {
     };
   });
 
-  const CardComp = () => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchQuery(searchInput);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  const CardComp = (item: UserDataProps) => {
     return (
       <View style={styles.card}>
         <View style={styles.left}>
           <View style={styles.avatarContainer}>
-            {true ? (
+            {!item?.profilePicture ? (
               <CustomText
                 fontfamily="Nunito-SemiBold"
                 color="#FFFFFF"
@@ -64,15 +80,18 @@ const ContactList = () => {
                 AF
               </CustomText>
             ) : (
-              <Image />
+              <Image
+                source={{uri: item?.profilePicture}}
+                style={styles.avatar}
+              />
             )}
           </View>
           <View style={styles.nameContainer}>
             <CustomText fontfamily="Nunito-Medium" fontSize={14}>
-              Afzal Ahmad
+              {item?.name}
             </CustomText>
             <CustomText fontfamily="Nunito-Medium" fontSize={10}>
-              Ahmad_97
+              {item?.username}
             </CustomText>
           </View>
         </View>
@@ -108,12 +127,15 @@ const ContactList = () => {
         }
         onPressRightIcon={() => toggleInputContainer()}
       />
-
       <Animated.View style={[styles.listContainer, animatedStyleList]}>
+        {isLoading &&
+          Array.from({length: 10}).map((_, index) => (
+            <SkeltonPlaceholderComponent key={index} />
+          ))}
         <FlatList
-          data={[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}
+          data={data?.users}
           showsVerticalScrollIndicator={false}
-          renderItem={({item}) => <CardComp />}
+          renderItem={({item}) => <CardComp {...item} />}
           keyExtractor={(item, index) => index.toString()}
         />
       </Animated.View>
@@ -153,5 +175,10 @@ const styles = StyleSheet.create({
   },
   nameContainer: {
     marginLeft: moderateScale(5),
+  },
+  avatar: {
+    width: '100%',
+    height: '100%',
+    borderRadius: moderateScale(52 / 2),
   },
 });

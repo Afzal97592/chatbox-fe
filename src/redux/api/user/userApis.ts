@@ -29,8 +29,8 @@ const authApiSlice = apiSlice.injectEndpoints({
       },
     }),
     getAllUsers: builder.query({
-      query: () => ({
-        url: `/users?search=&limit=10&page=1`,
+      query: ({pageNum = 1, limit = 10, searchQuery = ''}) => ({
+        url: `/users?search=${searchQuery}&limit=${limit}&page=${pageNum}`,
         method: 'GET',
       }),
     }),
