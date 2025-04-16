@@ -12,12 +12,12 @@ import CustomText from '../../components/CustomText';
 import HeaderComp from '../../components/HeaderComp';
 import SearchInput from '../../components/inputs/SearchInput';
 import SafeAreaComp from '../../components/SafeAreaComp';
+import SkeltonPlaceholderComponent from '../../components/skeltons/SkeltonPlaceholder';
 import {primary} from '../../constants/colors';
 import {useGetAllUsersQuery} from '../../redux/api/user/userApis';
+import {UserDataProps} from '../../types/commonTypes';
 import {goBack} from '../../utils/navigationService';
 import {moderateScale, verticalScale} from '../../utils/responsive';
-import SkeltonPlaceholderComponent from '../../components/skeltons/SkeltonPlaceholder';
-import {UserDataProps} from '../../types/commonTypes';
 
 const ContactList = () => {
   const animTranslateY = useSharedValue(70);
@@ -27,11 +27,13 @@ const ContactList = () => {
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [pageNum, setPageNum] = useState(1);
-  const {data, error, isLoading} = useGetAllUsersQuery({
+  const {data, error, isLoading, isFetching} = useGetAllUsersQuery({
     pageNum,
-    limit: 20,
+    limit: 10,
     searchQuery,
   });
+  const [userData, setUserData] = useState<UserDataProps[]>([]);
+
   const [openModel, setOpenModel] = useState(true);
 
   const toggleInputContainer = () => {
@@ -67,6 +69,18 @@ const ContactList = () => {
     return () => clearTimeout(timer);
   }, [searchInput]);
 
+  useEffect(() => {
+    if (data) {
+      setUserData([...userData, ...data?.users]);
+    }
+  }, [data]);
+
+  const handlePagination = () => {
+    if (userData.length < data?.totalCount && !isFetching) {
+      setPageNum(pageNum + 1);
+    }
+  };
+
   const CardComp = (item: UserDataProps) => {
     return (
       <View style={styles.card}>
@@ -77,7 +91,7 @@ const ContactList = () => {
                 fontfamily="Nunito-SemiBold"
                 color="#FFFFFF"
                 fontSize={25}>
-                AF
+                {item?.name.charAt(0).toLocaleUpperCase()}
               </CustomText>
             ) : (
               <Image
@@ -130,13 +144,21 @@ const ContactList = () => {
       <Animated.View style={[styles.listContainer, animatedStyleList]}>
         {isLoading &&
           Array.from({length: 10}).map((_, index) => (
-            <SkeltonPlaceholderComponent key={index} />
+            <View style={{marginTop: verticalScale(10)}}>
+              <SkeltonPlaceholderComponent key={index} />
+            </View>
           ))}
         <FlatList
-          data={data?.users}
+          data={userData}
           showsVerticalScrollIndicator={false}
           renderItem={({item}) => <CardComp {...item} />}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={item => item._id}
+          onEndReachedThreshold={0.2}
+          onEndReached={handlePagination}
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingBottom: verticalScale(100),
+          }}
         />
       </Animated.View>
     </SafeAreaComp>
