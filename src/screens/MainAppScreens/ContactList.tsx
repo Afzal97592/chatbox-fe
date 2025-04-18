@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Image, StyleSheet, View} from 'react-native';
+import {FlatList, Image, Platform, StyleSheet, View} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -39,8 +39,10 @@ const ContactList = () => {
   const toggleInputContainer = () => {
     setIsSearchInputOpen(!isSearchInputOpen);
     if (animOpacity.value === 0) {
+      let toBottom = verticalScale(100);
+      // Platform.OS === 'ios' ? 100 : 85;
       animOpacity.value = withTiming(1, {duration: 700});
-      animTranslateY.value = withTiming(100, {duration: 700});
+      animTranslateY.value = withTiming(toBottom, {duration: 700});
       animListTranslateY.value = withTiming(70, {duration: 400});
     } else {
       animOpacity.value = withTiming(0, {duration: 700});
@@ -64,13 +66,16 @@ const ContactList = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchQuery(searchInput);
-    }, 1000);
+      setPageNum(1);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [searchInput]);
 
   useEffect(() => {
-    if (data) {
+    if (data && pageNum === 1) {
+      setUserData(data?.users);
+    } else if (data && pageNum > 1) {
       setUserData([...userData, ...data?.users]);
     }
   }, [data]);
@@ -125,12 +130,20 @@ const ContactList = () => {
           value={searchInput}
           onChangeText={text => setSearchInput(text)}
           onPressCross={() => setSearchInput('')}
+          inputContainer={{
+            marginVertical:
+              Platform.OS === 'ios' ? verticalScale(12) : verticalScale(-16),
+            padding:
+              Platform.OS === 'ios' ? moderateScale(12) : moderateScale(5),
+          }}
         />
       </Animated.View>
       <HeaderComp
         showBackButton={false}
         screenName={'Contacts'}
-        style={{paddingHorizontal: moderateScale(4)}}
+        style={{
+          paddingHorizontal: moderateScale(4),
+        }}
         onPress={() => goBack()}
         RightIcon={
           isSearchInputOpen ? (
@@ -142,7 +155,7 @@ const ContactList = () => {
         onPressRightIcon={() => toggleInputContainer()}
       />
       <Animated.View style={[styles.listContainer, animatedStyleList]}>
-        {isLoading &&
+        {isFetching &&
           Array.from({length: 10}).map((_, index) => (
             <View style={{marginTop: verticalScale(10)}}>
               <SkeltonPlaceholderComponent key={index} />
@@ -189,7 +202,7 @@ const styles = StyleSheet.create({
   left: {flexDirection: 'row', justifyContent: 'center', alignItems: 'center'},
   avatarContainer: {
     width: moderateScale(52),
-    height: verticalScale(52),
+    height: moderateScale(52),
     backgroundColor: primary.gray,
     justifyContent: 'center',
     alignItems: 'center',

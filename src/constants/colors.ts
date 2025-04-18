@@ -9,4 +9,5 @@ export const primary = {
   extraLight: '#F3F6F6',
   gray: '#797C7B',
   borderColor: '#CDD1D0',
+  extraColor: '#1E1921',
 };

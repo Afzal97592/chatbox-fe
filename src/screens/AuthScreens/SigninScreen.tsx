@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {
   Alert,
   Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -80,80 +81,85 @@ const SigninScreen = () => {
   return (
     <SafeAreaComp>
       <HeaderComp onPress={() => goBack()} />
-      <View style={styles.topContainer}>
-        <CustomText variant="h1" fontfamily="Nunito-ExtraBold">
-          Log in to Chatbox
-        </CustomText>
-        <CustomText variant="h4" style={{textAlign: 'center'}}>
-          Welcome back! Sign in using your social account or email to continue
-          us
-        </CustomText>
-      </View>
-      <View
-        style={{
-          ...globalStyles.row,
-          gap: moderateScale(36),
-          marginVertical: verticalScale(18),
-          marginTop: verticalScale(30),
-        }}>
-        <TouchableOpacity
-          style={styles.icon}
-          onPress={() => Alert.alert('Coming Soon')}>
-          <Image source={GoogleIcon} style={{width: '100%', height: '100%'}} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.icon}
-          onPress={() => Alert.alert('Coming Soon')}>
-          <Image source={fbIcon} style={{width: '100%', height: '100%'}} />
-        </TouchableOpacity>
-      </View>
-      <View
-        style={{
-          ...globalStyles.row,
-          gap: moderateScale(16),
-          marginVertical: verticalScale(10),
-        }}>
-        <View style={{...styles.line}} />
-        <CustomText
-          variant="h1"
-          fontfamily="Nunito-SemiBold"
-          color={primary.gray}>
-          OR
-        </CustomText>
-        <View style={styles.line} />
-      </View>
-      <View style={styles.inputContainer}>
-        <InputWithLabel
-          inputLabel="Your Email"
-          placeholder="Enter Your Email"
-          error={errors.email}
-          value={formData.email}
-          onChangeText={text => handleInputChange('email', text)}
-          labelColor={primary.btn}
-          inputContainer={{marginBottom: verticalScale(36)}}
-        />
-        <InputWithLabel
-          inputLabel="Your Password"
-          placeholder="Enter Your Password"
-          error={errors.password}
-          value={formData.password}
-          onChangeText={text => handleInputChange('password', text)}
-          secureTextEntry={true}
-          labelColor={primary.btn}
-          inputContainer={{marginBottom: verticalScale(36)}}
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <SquareButton
-          title="Sign In"
-          onPress={handleSubmit}
-          textColor={isValidated ? primary.background : primary.gray}
+      <ScrollView>
+        <View style={styles.topContainer}>
+          <CustomText variant="h1" fontfamily="Nunito-ExtraBold">
+            Log in to Chatbox
+          </CustomText>
+          <CustomText variant="h4" style={{textAlign: 'center'}}>
+            Welcome back! Sign in using your social account or email to continue
+            us
+          </CustomText>
+        </View>
+        <View
           style={{
-            backgroundColor: isValidated ? primary.btn : primary.extraLight,
-          }}
-          disable={!isValidated}
-        />
-      </View>
+            ...globalStyles.row,
+            gap: moderateScale(36),
+            marginVertical: verticalScale(18),
+            marginTop: verticalScale(30),
+          }}>
+          <TouchableOpacity
+            style={styles.icon}
+            onPress={() => Alert.alert('Coming Soon')}>
+            <Image
+              source={GoogleIcon}
+              style={{width: '100%', height: '100%'}}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.icon}
+            onPress={() => Alert.alert('Coming Soon')}>
+            <Image source={fbIcon} style={{width: '100%', height: '100%'}} />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            ...globalStyles.row,
+            gap: moderateScale(16),
+            marginVertical: verticalScale(10),
+          }}>
+          <View style={{...styles.line}} />
+          <CustomText
+            variant="h1"
+            fontfamily="Nunito-SemiBold"
+            color={primary.gray}>
+            OR
+          </CustomText>
+          <View style={styles.line} />
+        </View>
+        <View style={styles.inputContainer}>
+          <InputWithLabel
+            inputLabel="Your Email"
+            placeholder="Enter Your Email"
+            error={errors.email}
+            value={formData.email}
+            onChangeText={text => handleInputChange('email', text)}
+            labelColor={primary.btn}
+            inputContainer={{marginBottom: verticalScale(36)}}
+          />
+          <InputWithLabel
+            inputLabel="Your Password"
+            placeholder="Enter Your Password"
+            error={errors.password}
+            value={formData.password}
+            onChangeText={text => handleInputChange('password', text)}
+            secureTextEntry={true}
+            labelColor={primary.btn}
+            inputContainer={{marginBottom: verticalScale(36)}}
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <SquareButton
+            title="Sign In"
+            onPress={handleSubmit}
+            textColor={isValidated ? primary.background : primary.gray}
+            style={{
+              backgroundColor: isValidated ? primary.btn : primary.extraLight,
+            }}
+            disable={!isValidated}
+          />
+        </View>
+      </ScrollView>
       <PopupModal
         visible={showModal}
         onClose={() => setShowModal(false)}

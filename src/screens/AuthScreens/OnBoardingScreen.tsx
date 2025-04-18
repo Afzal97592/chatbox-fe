@@ -2,6 +2,7 @@ import {
   Alert,
   Image,
   ImageBackground,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -26,7 +27,9 @@ import {navigate} from '../../utils/navigationService';
 const OnBoardingScreen = () => {
   return (
     <SafeAreaComp
-      style={{...globalStyles.container, backgroundColor: primary.dark}}>
+      style={{...globalStyles.container, backgroundColor: primary.dark}}
+      statusbarBackgroundColor={primary.extraColor}
+      barStyle={'light-content'}>
       <ImageBackground
         source={Ellipse}
         style={styles.bgImage}></ImageBackground>
@@ -52,9 +55,12 @@ const OnBoardingScreen = () => {
         <CustomText
           fontfamily={'Nunito-Bold'}
           color={primary.background}
-          fontSize={moderateScale(55)}
+          fontSize={
+            Platform.OS === 'android' ? moderateScale(60) : moderateScale(55)
+          }
           style={{
-            lineHeight: verticalScale(70),
+            lineHeight:
+              Platform.OS === 'android' ? verticalScale(75) : verticalScale(70),
           }}>
           Connect friends easily & quickly
         </CustomText>

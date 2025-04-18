@@ -68,7 +68,7 @@ const MyTabBar = ({state, descriptors, navigation}: any) => {
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: isFocused ? 50 : 0,
-              elevation: isFocused ? 16 : 0,
+              elevation: isFocused ? 50 : 0,
               borderTopWidth: isFocused ? 5 : 0,
               borderTopColor: isFocused ? '#24786D95' : 'transparent',
               zIndex: isFocused ? 999 : 1,

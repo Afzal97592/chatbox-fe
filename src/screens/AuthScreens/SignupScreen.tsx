@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import SquareButton from '../../components/buttons/SquareButton';
 import CustomText from '../../components/CustomText';
 import InputWithLabel from '../../components/inputs/InputWithLabel';
@@ -16,6 +23,7 @@ import useFormValidation from '../../hooks/validateFields';
 import {useRegisterUserMutation} from '../../redux/api/user/userApis';
 import PopupModal from '../../components/models/PopupModal';
 import {SuccessAnimation, ErrorAnimation} from '../../constants/ImagesPath';
+import {globalStyles} from '../../globalCss/globalCss';
 
 const SignupScreen = () => {
   const {formData, errors, handleInputChange, validateForm, isValidated} =
@@ -71,16 +79,20 @@ const SignupScreen = () => {
   return (
     <SafeAreaComp>
       <HeaderComp onPress={goBack} />
-      <View style={styles.topContainer}>
-        <CustomText variant="h1" fontfamily="Nunito-ExtraBold">
-          Sign up with Email
-        </CustomText>
-        <CustomText variant="h4" style={{textAlign: 'center'}}>
-          Get chatting with friends and family today by signing up for our chat
-          app!
-        </CustomText>
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1}}
+        scrollsToTop={true}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.topContainer}>
+          <CustomText variant="h1" fontfamily="Nunito-ExtraBold">
+            Sign up with Email
+          </CustomText>
+          <CustomText variant="h4" style={{textAlign: 'center'}}>
+            Get chatting with friends and family today by signing up for our
+            chat app!
+          </CustomText>
+        </View>
         <View style={styles.inputContainer}>
           <InputWithLabel
             inputLabel="Your Name"
@@ -119,20 +131,21 @@ const SignupScreen = () => {
             inputContainer={{marginBottom: verticalScale(36)}}
           />
         </View>
+        <View style={styles.buttonContainer}>
+          <SquareButton
+            title="Sign Up"
+            textColor={isValidated ? primary.background : primary.gray}
+            style={{
+              paddingVertical: verticalScale(13),
+              backgroundColor: isValidated ? primary.btn : primary.extraLight,
+            }}
+            onPress={handleSubmit}
+            disable={isLoading}
+            isLoading={isLoading}
+          />
+        </View>
       </ScrollView>
-      <View style={styles.buttonContainer}>
-        <SquareButton
-          title="Sign Up"
-          textColor={isValidated ? primary.background : primary.gray}
-          style={{
-            paddingVertical: verticalScale(13),
-            backgroundColor: isValidated ? primary.btn : primary.extraLight,
-          }}
-          onPress={handleSubmit}
-          disable={isLoading}
-          isLoading={isLoading}
-        />
-      </View>
+
       <PopupModal
         visible={showModal}
         onClose={() => setShowModal(false)}
@@ -158,12 +171,13 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginVertical: verticalScale(40),
+    marginBottom: verticalScale(100),
   },
   buttonContainer: {
     flex: 1,
     justifyContent: 'flex-end',
     position: 'absolute',
-    bottom: verticalScale(40),
+    bottom: verticalScale(25),
     width: SCREEN_WIDTH - moderateScale(80),
     alignSelf: 'center',
   },

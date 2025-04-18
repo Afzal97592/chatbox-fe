@@ -6,6 +6,7 @@ import {
   View,
   ViewStyle,
   TextStyle,
+  StatusBar,
 } from 'react-native';
 import {BlurView} from '@react-native-community/blur';
 import LottieView from 'lottie-react-native';
@@ -74,6 +75,7 @@ const PopupModal: FC<PopupModalProps> = ({
         onPress={isOnBackPressClose ? onClose : undefined}>
         <View style={styles.overlay}>
           <BlurView style={styles.blurView} blurType="light" blurAmount={10} />
+
           <TouchableWithoutFeedback>
             <View style={[styles.modalContent, containerStyle]}>
               {isCrossIcon && (
@@ -126,9 +128,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 5,
+      height: 5,
+    },
+    shadowOpacity: 0.9,
+    shadowRadius: 20,
+    elevation: 16,
   },
   blurView: {
     ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     width: '80%',

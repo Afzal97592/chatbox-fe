@@ -1,5 +1,6 @@
 import {
   Image,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -34,6 +35,7 @@ const SearchInput: FC<TextInputProps> = ({
       <View
         style={{
           flexDirection: 'row',
+          alignItems: 'center',
         }}>
         <SearchIcon width={18} height={18} />
         <TextInput
@@ -59,14 +61,14 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     backgroundColor: '#F3F6F6',
-    padding: moderateScale(12),
+    padding: moderateScale(5),
     borderRadius: moderateScale(8),
-    marginVertical: verticalScale(16),
+
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   input: {
     marginHorizontal: moderateScale(10),
-    width: SCREEN_W_WIDTH - 118,
+    width: SCREEN_W_WIDTH - moderateScale(200),
   },
 });

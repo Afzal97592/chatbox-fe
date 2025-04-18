@@ -25,13 +25,13 @@ interface CustomTextProps {
 }
 
 const fontSizeMap: Record<Variant, Record<PlatformType, number>> = {
-  h1: {android: 24, ios: 22},
-  h2: {android: 22, ios: 20},
-  h3: {android: 20, ios: 18},
-  h4: {android: 18, ios: 16},
-  h5: {android: 16, ios: 14},
-  h6: {android: 12, ios: 10},
-  h7: {android: 10, ios: 9},
+  h1: {android: 26, ios: 22},
+  h2: {android: 24, ios: 20},
+  h3: {android: 22, ios: 18},
+  h4: {android: 20, ios: 16},
+  h5: {android: 18, ios: 14},
+  h6: {android: 14, ios: 10},
+  h7: {android: 12, ios: 9},
 };
 
 const CustomText: FC<CustomTextProps> = ({

@@ -28,6 +28,7 @@ const RootNavigation = () => {
   setTimeout(() => {
     setIsSplashScreen(false);
   }, 4000);
+
   return (
     <NavigationContainer ref={navigationRef}>
       {isSplashScreen ? (

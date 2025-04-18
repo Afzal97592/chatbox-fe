@@ -15,7 +15,7 @@ export function moderateScale(size: number) {
   if (Platform.OS === 'ios') {
     return Math.round(PixelRatio.roundToNearestPixel(newSize));
   } else {
-    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 1;
+    return Math.round(PixelRatio.roundToNearestPixel(newSize));
   }
 }
 
@@ -24,7 +24,7 @@ export function verticalScale(size: number) {
   if (Platform.OS === 'ios') {
     return Math.round(PixelRatio.roundToNearestPixel(newSize));
   } else {
-    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 1;
+    return Math.round(PixelRatio.roundToNearestPixel(newSize));
   }
 }
 
