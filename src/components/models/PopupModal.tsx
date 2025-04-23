@@ -8,7 +8,7 @@ import {
   TextStyle,
   StatusBar,
 } from 'react-native';
-import {BlurView} from '@react-native-community/blur';
+// import {BlurView} from '@react-native-community/blur';
 import LottieView from 'lottie-react-native';
 import CustomText from '../CustomText';
 import CloseIcon from '../../assets/icons/Cross.svg';
@@ -74,7 +74,7 @@ const PopupModal: FC<PopupModalProps> = ({
       <TouchableWithoutFeedback
         onPress={isOnBackPressClose ? onClose : undefined}>
         <View style={styles.overlay}>
-          <BlurView style={styles.blurView} blurType="light" blurAmount={10} />
+          {/* <BlurView style={styles.blurView} blurType="light" blurAmount={10} /> */}
 
           <TouchableWithoutFeedback>
             <View style={[styles.modalContent, containerStyle]}>

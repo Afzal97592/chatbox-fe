@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {FlatList, Image, Platform, StyleSheet, View} from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -34,13 +34,14 @@ const ContactList = () => {
   });
   const [userData, setUserData] = useState<UserDataProps[]>([]);
 
+  console.log('userData', userData.length);
+
   const [openModel, setOpenModel] = useState(true);
 
   const toggleInputContainer = () => {
     setIsSearchInputOpen(!isSearchInputOpen);
     if (animOpacity.value === 0) {
-      let toBottom = verticalScale(100);
-      // Platform.OS === 'ios' ? 100 : 85;
+      let toBottom = Platform.OS === 'ios' ? 100 : 85;
       animOpacity.value = withTiming(1, {duration: 700});
       animTranslateY.value = withTiming(toBottom, {duration: 700});
       animListTranslateY.value = withTiming(70, {duration: 400});
@@ -76,15 +77,27 @@ const ContactList = () => {
     if (data && pageNum === 1) {
       setUserData(data?.users);
     } else if (data && pageNum > 1) {
-      setUserData([...userData, ...data?.users]);
+      setUserData(prevUserData => [...prevUserData, ...data?.users]);
     }
   }, [data]);
 
   const handlePagination = () => {
     if (userData.length < data?.totalCount && !isFetching) {
-      setPageNum(pageNum + 1);
+      setPageNum(prevPageNum => prevPageNum + 1);
     }
   };
+
+  // Memoized keyExtractor
+  const keyExtractor = useCallback(
+    (item: UserDataProps, index: number) => item._id || `fallback-key-${index}`,
+    [],
+  );
+
+  // Memoized renderItem
+  const renderItem = useCallback(
+    ({item}: {item: UserDataProps}) => <CardComp {...item} />,
+    [],
+  );
 
   const CardComp = (item: UserDataProps) => {
     return (
@@ -132,7 +145,7 @@ const ContactList = () => {
           onPressCross={() => setSearchInput('')}
           inputContainer={{
             marginVertical:
-              Platform.OS === 'ios' ? verticalScale(12) : verticalScale(-16),
+              Platform.OS === 'ios' ? verticalScale(12) : verticalScale(-10),
             padding:
               Platform.OS === 'ios' ? moderateScale(12) : moderateScale(5),
           }}
@@ -157,15 +170,15 @@ const ContactList = () => {
       <Animated.View style={[styles.listContainer, animatedStyleList]}>
         {isFetching &&
           Array.from({length: 10}).map((_, index) => (
-            <View style={{marginTop: verticalScale(10)}}>
-              <SkeltonPlaceholderComponent key={index} />
+            <View style={{marginTop: verticalScale(10)}} key={index}>
+              <SkeltonPlaceholderComponent />
             </View>
           ))}
         <FlatList
           data={userData}
           showsVerticalScrollIndicator={false}
-          renderItem={({item}) => <CardComp {...item} />}
-          keyExtractor={item => item._id}
+          renderItem={renderItem} // Use memoized renderItem
+          keyExtractor={keyExtractor} // Use memoized keyExtractor
           onEndReachedThreshold={0.2}
           onEndReached={handlePagination}
           contentContainerStyle={{
@@ -191,7 +204,7 @@ const styles = StyleSheet.create({
     // position: 'absolute',
   },
   listContainer: {
-    marginTop: verticalScale(14),
+    // marginTop: verticalScale(6),
   },
   card: {
     flexDirection: 'row',

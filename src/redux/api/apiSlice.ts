@@ -21,7 +21,8 @@ import {mmKvStorage} from '../../utils/mmkv-storage-utils';
 
 const baseQuery = async (args: any, api: any, extraOptions: any) => {
   const rawBaseQuery = fetchBaseQuery({
-    baseUrl: 'http://192.168.21.235:3001/api/v1/',
+    baseUrl: 'http://192.168.206.235:3001/api/v1/',
+
     prepareHeaders: headers => {
       const token = mmKvStorage.getItem('token');
       if (token) {

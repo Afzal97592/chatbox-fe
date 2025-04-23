@@ -4,3 +4,8 @@ extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autoli
 rootProject.name = 'chatboxFe'
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')
+def lottieCodegenPath = file("../node_modules/lottie-react-native/android/build/generated/source/codegen/jni")
+if (lottieCodegenPath.exists()) {
+    include(":lottie-react-native-codegen")
+    project(":lottie-react-native-codegen").projectDir = lottieCodegenPath
+}
