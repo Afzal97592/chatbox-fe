@@ -1,5 +1,5 @@
-import {createSlice} from '@reduxjs/toolkit';
-import {mmKvStorage} from '../../../utils/mmkv-storage-utils';
+import { createSlice } from '@reduxjs/toolkit';
+import { mmKvStorage } from '../../../utils/mmkv-storage-utils';
 
 const initialState = {
   token: mmKvStorage.getItem('token') || null,
@@ -19,5 +19,8 @@ const authSlice = createSlice({
   },
 });
 
-export const {setToken, clearToken} = authSlice.actions;
+
+
+
+export const { setToken, clearToken } = authSlice.actions;
 export default authSlice.reducer;

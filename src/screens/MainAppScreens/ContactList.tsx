@@ -30,7 +30,7 @@ const ContactList = () => {
   const {data, error, isLoading, isFetching} = useGetAllUsersQuery({
     pageNum,
     limit: 10,
-    searchQuery,
+    searchQuery: searchQuery.trim(),
   });
   const [userData, setUserData] = useState<UserDataProps[]>([]);
 
@@ -169,6 +169,7 @@ const ContactList = () => {
       />
       <Animated.View style={[styles.listContainer, animatedStyleList]}>
         {isFetching &&
+          userData.length === 0 &&
           Array.from({length: 10}).map((_, index) => (
             <View style={{marginTop: verticalScale(10)}} key={index}>
               <SkeltonPlaceholderComponent />

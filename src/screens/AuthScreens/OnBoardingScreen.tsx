@@ -1,30 +1,90 @@
+import React, {useEffect, useState} from 'react';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 import {
   Alert,
   Image,
   ImageBackground,
   Platform,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import SquareButton from '../../components/buttons/SquareButton';
+import CustomText from '../../components/CustomText';
 import SafeAreaComp from '../../components/SafeAreaComp';
 import {primary} from '../../constants/colors';
-import {Ellipse, fbIcon, GoogleIcon, Logo} from '../../constants/ImagesPath';
+import {
+  Ellipse,
+  ErrorAnimation,
+  fbIcon,
+  GoogleIcon,
+  Logo,
+  SuccessAnimation,
+} from '../../constants/ImagesPath';
+import {globalStyles} from '../../globalCss/globalCss';
+import {navigate} from '../../utils/navigationService';
 import {
   moderateScale,
   SCREEN_W_HEIGHT,
   SCREEN_W_WIDTH,
   verticalScale,
 } from '../../utils/responsive';
-import {globalStyles} from '../../globalCss/globalCss';
-import CustomText from '../../components/CustomText';
-import {fontFamilies} from '../../globalCss/fontstyle';
-import SquareButton from '../../components/buttons/SquareButton';
-import {navigate} from '../../utils/navigationService';
-
+import {useSigInWithGoogleMutation} from '../../redux/api/user/userApis';
+import {mmKvStorage} from '../../utils/mmkv-storage-utils';
+import {useDispatch} from 'react-redux';
+import {setToken} from '../../redux/api/user/authSlice';
+import PopupModal from '../../components/models/PopupModal';
 const OnBoardingScreen = () => {
+  const [signInWithGoogle, {data, isLoading}] = useSigInWithGoogleMutation();
+  const dispatch = useDispatch();
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    title: '',
+    subtitle: '',
+    animationSource: null,
+  });
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '502459518182-plas3k6p2sk9p7rcd1k09acromffogb4.apps.googleusercontent.com',
+    });
+  }, []);
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const {data} = await GoogleSignin.signIn();
+      const {idToken}: any = data;
+      const res = await signInWithGoogle(idToken);
+      setModalContent({
+        title: 'Success',
+        subtitle: 'You successfully logged in!',
+        animationSource: SuccessAnimation,
+      });
+      setShowModal(true);
+      if (res.data?.token) {
+        setTimeout(() => {
+          mmKvStorage.setItem('token', res?.data?.token);
+          dispatch(setToken(res?.data?.token));
+        }, 1000);
+      }
+    } catch (error: any) {
+      console.error('Google Sign-In Error:', error);
+      // Alert.alert('Error', 'Failed to sign in with Google. Please try again.');
+      console.error('Error submitting form:', error);
+      setModalContent({
+        title: 'Oops',
+        subtitle:
+          error?.data?.message || 'Something went wrong. Please try again.',
+        animationSource: ErrorAnimation,
+      });
+      setShowModal(true);
+    }
+  };
+
   return (
     <SafeAreaComp
       style={{...globalStyles.container, backgroundColor: primary.dark}}
@@ -80,9 +140,7 @@ const OnBoardingScreen = () => {
             gap: moderateScale(36),
             marginVertical: verticalScale(16),
           }}>
-          <TouchableOpacity
-            style={styles.icon}
-            onPress={() => Alert.alert('Coming Soon')}>
+          <TouchableOpacity style={styles.icon} onPress={handleGoogleSignIn}>
             <Image
               source={GoogleIcon}
               style={{width: '100%', height: '100%'}}
@@ -133,6 +191,15 @@ const OnBoardingScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
+      <PopupModal
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        title={modalContent.title}
+        subtitle={modalContent.subtitle}
+        animationSource={modalContent.animationSource}
+        isCrossIcon={true}
+        isOnBackPressClose={false}
+      />
     </SafeAreaComp>
   );
 };

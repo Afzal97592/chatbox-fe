@@ -7,12 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:480779317722:android:0437782b998d9cc05fd0e3",
+        "mobilesdk_app_id": "1:480779317722:android:3aa307afa92626335fd0e3",
         "android_client_info": {
           "package_name": "com.chatboxfe"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "480779317722-91bs0ct8jlk1jpbvsq5o51rulfi306sj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDflHL49pxa4EXMJoEn6NC6SrzkdZWmX24"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480779317722-91bs0ct8jlk1jpbvsq5o51rulfi306sj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "480779317722-t66r3a242mm8e4ov5lidi84vi50be6oh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.chatboxFe"
+              }
+            }
+          ]
         }
       }
     }
